@@ -1,0 +1,38 @@
+.sidebar {
+  flex: none;
+  width: 300px;
+  background-color: rgb(30, 30, 30);
+
+  & .title {
+    color: grey;
+    display: flex;
+    transition: background-color 0.2s, color 0.2s;
+
+    &>div {
+      padding: 5px 10px;
+
+      &:hover {
+        background-color: dodgerblue;
+        color: white;
+      }
+    }
+  }
+
+  & .content {
+    color: white;
+  }
+
+  & .active {
+    color: lightgray;
+    background-color: black;
+  }
+}
+
+.show {
+  display: flex;
+  flex-direction: column;
+}
+
+.hide {
+  display: none;
+}
