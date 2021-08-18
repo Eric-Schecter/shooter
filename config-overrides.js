@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = function override(config, env) {
   const loaders = config.module.rules.find(rule => Array.isArray(rule.oneOf)).oneOf;
   const index = loaders.length - 2;

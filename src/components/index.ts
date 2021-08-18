@@ -7,5 +7,4 @@ export { Creatation } from './Creatation';
 export { Information } from './Information';
 export { Settings } from './Settings';
 
-export { Viewer } from './Viewer';
 export { Scene } from './Scene';

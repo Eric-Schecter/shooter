@@ -1,10 +1,9 @@
-import { Clock, Scene, WebGLRenderer } from "three";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
+import { Camera, Clock, Scene, WebGLRenderer } from "three";
 import { TickAble } from "./types";
 
 export class Loop {
   private clock = new Clock();
-  constructor(private renderer: WebGLRenderer, private scene: Scene, private composer?: EffectComposer) { }
+  constructor(private renderer: WebGLRenderer, private scene: Scene, private camera: Camera) { }
   private tick = (delta: number) => {
     this.scene.traverse((obj) => {
       const tickableObj = obj as TickAble;
@@ -15,7 +14,7 @@ export class Loop {
     this.renderer.setAnimationLoop(() => {
       const delta = this.clock.getDelta();
       this.tick(delta);
-      this.composer?.render();
+      this.renderer.render(this.scene, this.camera);
     });
   }
   public stop = () => {

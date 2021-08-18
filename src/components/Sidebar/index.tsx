@@ -1,12 +1,16 @@
-import React, { useState, Children, ReactElement } from 'react';
+import React, { useState, Children, ReactElement, useEffect } from 'react';
 import styles from './index.module.scss';
 
 type Props = {
   children?: ReactElement | ReactElement[],
+  index: number,
 }
 
-export const Sidebar = ({ children }: Props) => {
+export const Sidebar = ({ children, index }: Props) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  useEffect(() => {
+    setActiveIndex(index !== -1 ? 1 : 0);
+  }, [index])
   return <div className={styles.sidebar}>
     <div className={styles.title}>
       {Children.map(children, (child, i) => <div

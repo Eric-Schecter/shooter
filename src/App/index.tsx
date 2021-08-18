@@ -1,12 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChangeViewCommand, FullScreenCommand, RedirectCommand } from '../commands';
 import { Menubar, MenubarItem, MenubarList, Scene, Sidebar, Creatation, Information, Settings } from '../components';
 import { World } from '../World';
 import styles from './index.module.scss';
+import { useLoadData } from './useLoadData';
 
 export const App = () => {
-  const [world, setWorld] = useState<World|undefined>();
-  return <div className={styles.root}>
+  const [world, setWorld] = useState<World | undefined>();
+  const { data, database } = useLoadData();
+  const [index, setIndex] = useState(-1);
+  const refCreate = useRef<any>();
+
+  useEffect(() => {
+    if (Object.keys(data).length && Object.keys(database).length && world) {
+      world.database = database;
+      world.create(data);
+      world.cb = (id: number) => setIndex(id);
+    }
+  }, [data, database, world])
+
+  return <div className={styles.root} onClick={() => refCreate.current?.reset()}>
     <Menubar >
       <MenubarList name='File'>
         <MenubarItem name='New' command={new ChangeViewCommand(world)} />
@@ -30,9 +43,9 @@ export const App = () => {
     </Menubar>
     <div className={styles.wrapper}>
       <Scene setWorld={setWorld} />
-      <Sidebar >
-        <Creatation title='Scene' />
-        <Information title='Info' />
+      <Sidebar index={index} >
+        <Creatation title='Scene' world={world} ref={refCreate} data={database} />
+        <Information title='Info' data={data[index]} />
         <Settings title='Settings' />
       </Sidebar>
     </div>

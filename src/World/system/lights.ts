@@ -7,9 +7,10 @@ const createIndirectLights = () => {
 
 const createDirectLights = () => {
   const directionalLight = new DirectionalLight('white', 2);
-  directionalLight.position.set(100,100,100);
-  directionalLight.lookAt(0, 0, 0);
+  directionalLight.position.set(500,200,500);
   directionalLight.castShadow = true;
+  directionalLight.shadow.camera.near = 1;
+  directionalLight.shadow.camera.far = 2000;
   directionalLight.shadow.camera.left = -1000;
   directionalLight.shadow.camera.right = 1000;
   directionalLight.shadow.camera.top = -1000;

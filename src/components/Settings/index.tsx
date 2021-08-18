@@ -1,11 +1,13 @@
-import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import styles from './index.module.scss';
 
 type Props = {
-  title:string
+  title: string
 }
 
-export const Settings = ({title}:Props) => {
+export const Settings: FC<Props> = ({ children }) => {
 
-  return <div>Settings</div>
+  return <div className={styles.root}>
+    {children}
+  </div>
 }

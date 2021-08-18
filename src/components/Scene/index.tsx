@@ -11,7 +11,7 @@ export const Scene = ({ setWorld }: Props) => {
   useEffect(() => {
     const container = ref.current;
     if (!container) { return }
-    const world = World.createInstance(container);
+    const world = World.getInstance(container);
     world.start();
     setWorld(world);
     return () => {

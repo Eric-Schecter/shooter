@@ -1,7 +1,9 @@
 .sidebar {
-  flex: none;
+  display: flex;
+  flex-direction: column;
   width: 300px;
   background-color: rgb(30, 30, 30);
+  overflow: hidden;
 
   & .title {
     color: grey;
@@ -19,6 +21,9 @@
   }
 
   & .content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     color: white;
   }
 
@@ -31,6 +36,7 @@
 .show {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .hide {

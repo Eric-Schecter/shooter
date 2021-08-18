@@ -1,4 +1,4 @@
-import { Camera, Mesh } from "three"
+import { Camera, Line, Mesh } from "three"
 
 export interface TickAble {
   tick?: (delta: number) => any;
@@ -7,3 +7,4 @@ export interface TickAble {
 
 export type TickableMesh = Mesh & TickAble;
 export type TickableCamera = Camera & TickAble;
+export type TickableLine = Line & TickAble;

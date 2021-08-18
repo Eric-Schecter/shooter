@@ -1,12 +1,12 @@
 import { Object3D, Scene, WebGLRenderer } from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { createAssets } from './assets';
-import { Loop, createRenderer, createScene, createCamera, Resizer, createLights, createComposer, Pick, Control } from './system';
+import { Data, DataBase, MyGroup } from '../shared/types';
+import { Assets } from './assets';
+import { Loop, createRenderer, createScene, createCamera, Resizer, createLights, Control } from './system';
 import { TickableCamera } from './system/types';
 
 export class World {
   private static instance: World;
-  public static createInstance = (container: HTMLElement) => {
+  public static getInstance = (container: HTMLElement) => {
     if (!World.instance) {
       World.instance = new World(container);
     }
@@ -17,27 +17,26 @@ export class World {
   private _camera: TickableCamera;
   private renderer: WebGLRenderer;
   private _controls: Control;
-  private composer: EffectComposer;
   private loop: Loop;
   private resizer: Resizer;
-  // private pick: Pick;
+  private gap = 20;
+  private assets: Assets;
+
   private constructor(container: HTMLElement) {
     this.renderer = createRenderer(container);
     const canvas = this.renderer.domElement;
     this.scene = createScene();
     this._camera = createCamera(canvas);
-    this.composer = createComposer(this.scene, this._camera, this.renderer);
-    this.loop = new Loop(this.renderer, this.scene, this.composer);
-    this._controls = new Control(this._camera, canvas);
-
-    // this.pick = new Pick(canvas, this._camera.instance, this.scene,this._controls);
     this.resizer = new Resizer(this.renderer, this._camera, container);
-    const assets = createAssets();
-    // this.transformControl.attach(assets[1]);
-
+    this.assets = new Assets(this.gap);
+    const { components, pickArea, selectEffect } = this.assets.create();
     const lights = createLights();
-    this.scene.add(...assets, ...lights,this._camera);
+    this.scene.add(...components, ...lights, this._camera);
     this.renderer.render(this.scene, this._camera);
+    this._controls = new Control(this._camera, canvas, this.scene, pickArea,selectEffect);
+    this._controls.gap = this.gap;
+    this.assets.controls = this._controls;
+    this.loop = new Loop(this.renderer, this.scene, this._camera);
   }
   public start = () => {
     this.loop.start();
@@ -55,10 +54,33 @@ export class World {
       }
     })
   }
+  public create = (data: number | { [prop: string]: Data }) => {
+    if (typeof data === 'number') {
+      const obj = this.assets.createGroupByID(data);
+      this.scene.add(obj);
+      this.assets.showGrid(true);
+    } else {
+      const objs = this.assets.createGroups(data);
+      this.scene.add(...objs);
+    }
+  }
   public get camera() {
     return this._camera;
   }
   public get controls() {
     return this._controls;
+  }
+  public set database(data: { [prop: string]: DataBase }) {
+    this.assets.database = data;
+  }
+  public set cb(fn: (id: number) => void) {
+    this._controls.cb = (obj: Object3D | MyGroup | null) => {
+      if (!obj) {
+        fn(-1);
+      } else if ('localID' in obj) {
+        const id = this.assets.map.get(obj.localID);
+        fn(id);
+      }
+    };
   }
 }
