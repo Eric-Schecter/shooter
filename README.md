@@ -7,7 +7,7 @@ A shooter game built with Threejs.
 
 ## Get Started
 #### Run Online   
-[https://shooter-game.netlify.app](https://shooter-game.netlify.app) 
+[https://plane-shooter-game.netlify.app](https://plane-shooter-game.netlify.app) 
 
 ## License
 This project is licensed under [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
