@@ -1,13 +1,20 @@
 import { Camera, Clock, Scene, WebGLRenderer } from "three";
-import { TickAble } from "./types";
+import { Tickable } from "../../shared/types";
 
 export class Loop {
   private clock = new Clock();
-  constructor(private renderer: WebGLRenderer, private scene: Scene, private camera: Camera) { }
+  constructor(private renderer: WebGLRenderer, private scene: Scene, private camera: Camera, private tickables: (Tickable | Tickable[])[]) { }
   private tick = (delta: number) => {
-    this.scene.traverse((obj) => {
-      const tickableObj = obj as TickAble;
-      tickableObj.needTick && tickableObj.tick && tickableObj.tick(delta);
+    this.tickables.forEach(tickable => {
+      if (Array.isArray(tickable)) {
+        tickable.forEach(obj => obj.tick && obj.tick(delta))
+      } else {
+        tickable.tick && tickable.tick(delta)
+      }
+    });
+    this.scene.traverse(obj => {
+      const tickableObj = obj as Tickable;
+      tickableObj.tick && tickableObj.tick(delta);
     })
   }
   public start = () => {

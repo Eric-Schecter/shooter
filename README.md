@@ -3,31 +3,11 @@
 </p>
 
 ## About The Project
-A visualizer for music.  
-Drop your music file to change song.  
+A shooter game built with Threejs.  
 
 ## Get Started
 #### Run Online   
-[https://music-visualizer-project.netlify.app](https://music-visualizer-project.netlify.app) 
-
-#### Run locally
-1. Clone the repo  
-```
-git clone git@github.com:Eric-Schecter/music-visualizer.git
-```
-2. Open Folder  
-```
-cd music-visualizer
-```
-3. Install npm packages  
-```
-npm install
-```
-4. Start app  
-```
-npm start
-```
-Then visit 'http://localhost:3000'
+[https://shooter-game.netlify.app](https://shooter-game.netlify.app) 
 
 ## License
 This project is licensed under [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -35,5 +15,5 @@ This project is licensed under [![License: MIT](https://img.shields.io/badge/Lic
 ## Contact
 * Email:[eric199002@icloud.com](eric199002@icloud.com)
 * Twitter:[https://twitter.com/nikoniko600](https://twitter.com/nikoniko600)
-* Repo:[https://github.com/Eric-Schecter/music-visualizer](https://github.com/Eric-Schecter/music-visualizer)
-* App:[https://music-visualizer-project.netlify.app](https://music-visualizer-project.netlify.app) 
+* Repo:[https://github.com/Eric-Schecter/shooter](https://github.com/Eric-Schecter/shooter)
+* App:[https://shooter-game.netlify.app](https://shooter-game.netlify.app) 

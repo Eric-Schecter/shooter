@@ -1,16 +1,17 @@
 import { ACESFilmicToneMapping, PCFSoftShadowMap, sRGBEncoding, WebGLRenderer } from "three";
 
-export const createRenderer = (container: HTMLElement) => {
-  const { clientWidth: width, clientHeight: height } = container;
-  const renderer = new WebGLRenderer({ antialias: true });
-  renderer.toneMapping = ACESFilmicToneMapping;
-  renderer.outputEncoding = sRGBEncoding;
-  renderer.debug.checkShaderErrors = false;
-  renderer.physicallyCorrectLights = true;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = PCFSoftShadowMap;
-  renderer.setSize(width, height);
-  renderer.setPixelRatio(window.devicePixelRatio);
-  container.appendChild(renderer.domElement);
-  return renderer;
+export class MyRenderer extends WebGLRenderer {
+  constructor(container: HTMLElement) {
+    super({ antialias: true });
+    const { clientWidth: width, clientHeight: height } = container;
+    this.toneMapping = ACESFilmicToneMapping;
+    this.outputEncoding = sRGBEncoding;
+    this.debug.checkShaderErrors = false;
+    this.physicallyCorrectLights = true;
+    this.shadowMap.enabled = true;
+    this.shadowMap.type = PCFSoftShadowMap;
+    this.setSize(width, height);
+    this.setPixelRatio(window.devicePixelRatio);
+    container.appendChild(this.domElement);
+  }
 }

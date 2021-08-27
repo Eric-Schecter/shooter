@@ -1,48 +1,50 @@
-import { Object3D, Scene, WebGLRenderer } from 'three';
-import { Data, DataBase, MyGroup } from '../shared/types';
-import { Assets } from './assets';
-import { Loop, createRenderer, createScene, createCamera, Resizer, createLights, Control } from './system';
-import { TickableCamera } from './system/types';
+import { Cache, Object3D, Scene, WebGLRenderer } from 'three';
+import { Character, State } from '../shared';
+import { BlockGenerator } from './block';
+import { BulletGenerator } from './bullet';
+import { Collision } from './collision';
+import { ParticleGenerator } from './particle';
+import { Player } from './player';
+import { SmokeGenerator } from './smoke';
+import { Loop, MyRenderer, MyScene, MyPerspectiveCamera, Resizer, Lights } from './system';
 
 export class World {
-  private static instance: World;
-  public static getInstance = (container: HTMLElement) => {
-    if (!World.instance) {
-      World.instance = new World(container);
-    }
-    return World.instance;
-  }
-
   private scene: Scene;
-  private _camera: TickableCamera;
+  private camera: MyPerspectiveCamera;
   private renderer: WebGLRenderer;
-  private _controls: Control;
   private loop: Loop;
   private resizer: Resizer;
-  private gap = 20;
-  private assets: Assets;
+  private lights: Lights;
+  private blockGenerator?: BlockGenerator;
+  private player?: Player;
 
-  private constructor(container: HTMLElement) {
-    this.renderer = createRenderer(container);
+  constructor(container: HTMLElement, private getPoint: (value: number) => void, private getHurt: () => void) {
+    Cache.enabled = true;
+    this.renderer = new MyRenderer(container);
     const canvas = this.renderer.domElement;
-    this.scene = createScene();
-    this._camera = createCamera(canvas);
-    this.resizer = new Resizer(this.renderer, this._camera, container);
-    this.assets = new Assets(this.gap);
-    const { components, pickArea, selectEffect } = this.assets.create();
-    const lights = createLights();
-    this.scene.add(...components, ...lights, this._camera);
-    this.renderer.render(this.scene, this._camera);
-    this._controls = new Control(this._camera, canvas, this.scene, pickArea,selectEffect);
-    this._controls.gap = this.gap;
-    this.assets.controls = this._controls;
-    this.loop = new Loop(this.renderer, this.scene, this._camera);
-  }
-  public start = () => {
+    const { clientWidth, clientHeight } = canvas;
+    this.scene = new MyScene();
+    this.camera = new MyPerspectiveCamera(20, clientWidth / clientHeight, 0.1, 1000);
+    this.resizer = new Resizer(this.renderer, this.camera, container);
+    this.lights = new Lights();
+    const { assets, playerGroup, enemyGroup } = this.createAssets(canvas);
+    this.scene.add(...assets, ...this.lights.instance, this.camera);
+    const collision = new Collision(playerGroup, enemyGroup);
+    this.loop = new Loop(this.renderer, this.scene, this.camera, [collision]);
     this.loop.start();
   }
-  public stop = () => {
-    this.loop.stop();
+  private createAssets = (canvas: HTMLCanvasElement) => {
+    const particleGenerator = new ParticleGenerator();
+    const smokeGenerator = new SmokeGenerator();
+    this.blockGenerator = new BlockGenerator(particleGenerator, this.getPoint);
+    const bulletGenerator = new BulletGenerator();
+    this.player = new Player(canvas, this.camera, bulletGenerator, smokeGenerator, this.getHurt);
+
+    return {
+      assets: [this.blockGenerator, bulletGenerator, this.player, particleGenerator, smokeGenerator],
+      playerGroup: [this.player, bulletGenerator.children] as Character[],
+      enemyGroup: this.blockGenerator.children as Character[],
+    }
   }
   public dispose = () => {
     Object.values(this).forEach(component => {
@@ -54,33 +56,17 @@ export class World {
       }
     })
   }
-  public create = (data: number | { [prop: string]: Data }) => {
-    if (typeof data === 'number') {
-      const obj = this.assets.createGroupByID(data);
-      this.scene.add(obj);
-      this.assets.showGrid(true);
-    } else {
-      const objs = this.assets.createGroups(data);
-      this.scene.add(...objs);
-    }
-  }
-  public get camera() {
-    return this._camera;
-  }
-  public get controls() {
-    return this._controls;
-  }
-  public set database(data: { [prop: string]: DataBase }) {
-    this.assets.database = data;
-  }
-  public set cb(fn: (id: number) => void) {
-    this._controls.cb = (obj: Object3D | MyGroup | null) => {
-      if (!obj) {
-        fn(-1);
-      } else if ('localID' in obj) {
-        const id = this.assets.map.get(obj.localID);
-        fn(id);
+  public setState = (state: State) => {
+    switch (state) {
+      case State.Playing: {
+        this.player?.enable();
+        this.blockGenerator?.reset();
+        break;
       }
-    };
+      case State.End: {
+        this.player?.disable();
+        break;
+      }
+    }
   }
 }

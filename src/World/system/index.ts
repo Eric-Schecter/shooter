@@ -1,7 +1,7 @@
 export { Loop } from './loop';
-export { createRenderer } from './renderer';
-export { createScene } from './scene';
-export { createCamera } from './camera';
-export { createLights } from './lights';
-export { Control } from './controls';
+export { MyRenderer } from './renderer';
+export { MyScene } from './scene';
+export { MyPerspectiveCamera } from './camera';
+export { Lights } from './lights';
 export { Resizer } from './resize';
+export { audioHandler } from './audio';

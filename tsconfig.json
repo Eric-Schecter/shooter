@@ -19,7 +19,8 @@
     "jsx": "react",
     "experimentalDecorators": true,
     "noFallthroughCasesInSwitch": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "downlevelIteration":true,
   },
   "include": [
     "src"

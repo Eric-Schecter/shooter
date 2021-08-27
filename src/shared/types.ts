@@ -1,22 +1,23 @@
-import { Group } from "three";
+import { Object3D } from "three";
 
-type Pos = {
-  x: number,
-  y: number
+export interface Tickable {
+  tick?: (delta: number) => void,
 }
 
-export type Data = {
-  pos: Pos,
-  modelID: number,
+export interface Hitable {
+  power: number;
+  hit: (character: Hitable) => void;
 }
 
-export type DataBase = {
-  type: 'model' | 'box',
-  name: string,
-  url: string,
+export interface LifeUnit {
+  isDead: boolean;
 }
 
-export class MyGroup extends Group {
-  public localID = -1;
-  public name = 'wrapper'
+export type Character = Hitable & LifeUnit & Object3D;
+
+export enum State {
+  Loading,
+  Start,
+  Playing,
+  End,
 }

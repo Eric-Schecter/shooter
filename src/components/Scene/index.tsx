@@ -3,16 +3,19 @@ import { World } from '../../World';
 import styles from './index.module.scss';
 
 type Props = {
-  setWorld: Dispatch<SetStateAction<World | undefined>>,
+  setPoints: Dispatch<SetStateAction<number>>;
+  setHP: Dispatch<SetStateAction<number>>;
+  setWorld: Dispatch<SetStateAction<World | undefined>>;
 }
 
-export const Scene = ({ setWorld }: Props) => {
+export const Scene = ({ setPoints, setHP, setWorld }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const container = ref.current;
     if (!container) { return }
-    const world = World.getInstance(container);
-    world.start();
+    const getPoint = (value: number) => setPoints(pre => pre + value);
+    const getHurt = () => setHP(pre => pre - 1);
+    const world = new World(container, getPoint, getHurt);
     setWorld(world);
     return () => {
       world.dispose();
@@ -20,7 +23,10 @@ export const Scene = ({ setWorld }: Props) => {
         container.removeChild(container.children[i]);
       }
     };
-  }, [ref, setWorld])
+  }, [ref, setPoints, setHP, setWorld])
 
-  return <div ref={ref} className={styles.scene} />
+  return <div
+    ref={ref}
+    className={styles.scene}
+  />
 }
