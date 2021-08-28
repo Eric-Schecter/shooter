@@ -1,7 +1,6 @@
 import { PerspectiveCamera } from "three";
 
 export class MyPerspectiveCamera extends PerspectiveCamera {
-  public tick = undefined;
   constructor(fov: number, ratio: number, near: number, far: number) {
     super(fov, ratio, near, far);
     this.position.set(0, 0, 200);
