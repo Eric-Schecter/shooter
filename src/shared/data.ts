@@ -11,6 +11,7 @@ export const medias = {
     player_shoot: 'media/player_shoot.wav'
   },
   models: {
-    Rocket_Ship_01: 'models/rocket/Rocket_Ship_01.gltf'
+    Rocket_Ship_01: 'models/rocket/Rocket_Ship_01.gltf',
+    Rocket_Ship_01bin: 'models/rocket/Rocket_Ship_01.bin'
   },
 }
